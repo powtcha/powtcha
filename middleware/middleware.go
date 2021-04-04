@@ -13,6 +13,7 @@ import (
 var (
 	errPowtchaNotFound      = errors.New("powtcha: result not found")
 	errPowtchaInvalidFormat = errors.New("powtcha: invalid result format")
+	errPowtchaInvalidAppId  = errors.New("powtcha: invalid appId")
 )
 
 type middleware struct {
@@ -113,6 +114,23 @@ func (mw *middleware) Generate(c *gin.Context) {
 		return
 	}
 	c.String(http.StatusOK, puzzleStr)
+}
+
+func (mw *middleware) IsValid(c *gin.Context) error {
+	var err error
+	var resultStr string
+	if resultStr, err = mw.locationFunc(c); err != nil {
+		return errPowtchaNotFound
+	}
+	log.Println(resultStr)
+	result, err := powtcha.DecodeResult(resultStr, mw.secret)
+	if err != nil {
+		return errPowtchaInvalidFormat
+	}
+	if !result.Valid(mw.appID) {
+		return errPowtchaInvalidAppId
+	}
+	return nil
 }
 
 func New(config Config) *middleware {
