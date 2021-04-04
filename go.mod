@@ -1,4 +1,4 @@
-module powtcha
+module github.com/powtcha/powtcha
 
 go 1.16
 
