@@ -16,8 +16,8 @@ var (
 )
 
 type middleware struct {
-	appID        uint32
-	validity     time.Duration
+	AppID        uint32
+	Validity     time.Duration
 	problems     byte
 	difficulty   byte
 	secret       []byte
@@ -68,8 +68,8 @@ func newPowtcha(config Config) *middleware {
 	}
 
 	return &middleware{
-		appID:        config.AppID,
-		validity:       config.Validity,
+		AppID:        config.AppID,
+		Validity:     config.Validity,
 		problems:     config.Problems,
 		difficulty:   config.Difficulty,
 		secret:       config.Secret,
@@ -97,7 +97,7 @@ func (mw *middleware) IsValid(c *gin.Context) error {
 	if err != nil {
 		return errPowtchaInvalidFormat
 	}
-	if !result.Valid(mw.appID) {
+	if !result.Valid(mw.AppID) {
 		return errPowtchaInvalidAppId
 	}
 	return nil
@@ -118,7 +118,7 @@ func (mw *middleware) Verify(c *gin.Context) {
 }
 
 func (mw *middleware) Generate(c *gin.Context) {
-	puzzle, err := powtcha.NewPuzzle(mw.appID, mw.validity, mw.problems, mw.difficulty)
+	puzzle, err := powtcha.NewPuzzle(mw.AppID, mw.Validity, mw.problems, mw.difficulty)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
