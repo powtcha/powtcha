@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/powtcha/powtcha"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -84,14 +83,11 @@ func (mw *middleware) Verify(c *gin.Context) {
 	var err error
 	var resultStr string
 	if resultStr, err = mw.locationFunc(c); err != nil {
-		log.Println(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	log.Println(resultStr)
 	result, err := powtcha.DecodeResult(resultStr, mw.secret)
 	if err != nil {
-		log.Println(err)
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -122,7 +118,6 @@ func (mw *middleware) IsValid(c *gin.Context) error {
 	if resultStr, err = mw.locationFunc(c); err != nil {
 		return errPowtchaNotFound
 	}
-	log.Println(resultStr)
 	result, err := powtcha.DecodeResult(resultStr, mw.secret)
 	if err != nil {
 		return errPowtchaInvalidFormat
