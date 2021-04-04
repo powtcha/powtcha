@@ -79,23 +79,42 @@ func newPowtcha(config Config) *middleware {
 	}
 }
 
-func (mw *middleware) Verify(c *gin.Context) {
+func (mw *middleware) GetResult(c *gin.Context) (*powtcha.Result, error) {
 	var err error
 	var resultStr string
 	if resultStr, err = mw.locationFunc(c); err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
+		return nil, errPowtchaNotFound
 	}
 	result, err := powtcha.DecodeResult(resultStr, mw.secret)
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
+		return nil, errPowtchaInvalidFormat
+	}
+	return result, nil
+}
+
+func (mw *middleware) IsValid(c *gin.Context) error {
+	result, err := mw.GetResult(c)
+	if err != nil {
+		return errPowtchaInvalidFormat
 	}
 	if !result.Valid(mw.appID) {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
+		return errPowtchaInvalidAppId
 	}
-	c.Status(http.StatusNoContent)
+	return nil
+}
+
+func (mw *middleware) Verify(c *gin.Context) {
+	err := mw.IsValid(c)
+	switch err {
+	case errPowtchaNotFound:
+		c.AbortWithStatus(http.StatusBadRequest)
+	case errPowtchaInvalidFormat:
+		c.AbortWithStatus(http.StatusBadRequest)
+	case errPowtchaInvalidAppId:
+		c.AbortWithStatus(http.StatusBadRequest)
+	default:
+		c.Status(http.StatusNoContent)
+	}
 }
 
 func (mw *middleware) Generate(c *gin.Context) {
@@ -110,22 +129,6 @@ func (mw *middleware) Generate(c *gin.Context) {
 		return
 	}
 	c.String(http.StatusOK, puzzleStr)
-}
-
-func (mw *middleware) IsValid(c *gin.Context) error {
-	var err error
-	var resultStr string
-	if resultStr, err = mw.locationFunc(c); err != nil {
-		return errPowtchaNotFound
-	}
-	result, err := powtcha.DecodeResult(resultStr, mw.secret)
-	if err != nil {
-		return errPowtchaInvalidFormat
-	}
-	if !result.Valid(mw.appID) {
-		return errPowtchaInvalidAppId
-	}
-	return nil
 }
 
 func New(config Config) *middleware {
