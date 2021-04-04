@@ -94,7 +94,7 @@ func (mw *middleware) Verify(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
-	if !result.Valid() {
+	if !result.Valid(mw.appID) {
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}

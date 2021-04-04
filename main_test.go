@@ -27,27 +27,27 @@ func TestPuzzleSolvable(t *testing.T) {
 
 func TestPuzzleResultValid(t *testing.T) {
 	assert := assertLib.New(t)
-	puzzle, err := NewPuzzle( 0, 5, 12, 60)
+	puzzle, err := NewPuzzle( 42, 5, 12, 60)
 	assert.NoError(err, "unable to create puzzle")
 	res, err := puzzle.GetResult()
 	assert.NoError(err, "unable to find solutions")
 	assert.Len(res.Solutions, int(puzzle.Problems))
-	assert.True(res.Valid(), "invalid solution found")
+	assert.True(res.Valid(puzzle.AppID), "invalid solution found")
 }
 
 func TestPuzzleResultParsable(t *testing.T) {
 	assert := assertLib.New(t)
-	puzzle, err := NewPuzzle( 0, 5, 4, 140)
+	puzzle, err := NewPuzzle( 42, 5, 4, 140)
 	assert.NoError(err, "unable to create puzzle")
 	res, err := puzzle.GetResult()
 	assert.NoError(err, "unable to find solutions")
 	assert.Len(res.Solutions, int(puzzle.Problems))
-	assert.True(res.Valid(), "invalid solution found")
+	assert.True(res.Valid(puzzle.AppID), "invalid solution found")
 	str, err := res.Encode(nil, "")
 	assert.NoError(err, "unable to encode result")
 	result, err := DecodeResult(str, nil)
 	assert.NoError(err, "unable to decode result")
-	assert.True(result.Valid(), "parsed result is now invalid ¯\\_(ツ)_/¯")
+	assert.True(result.Valid(puzzle.AppID), "parsed result is now invalid ¯\\_(ツ)_/¯")
 	log.Println("calculation took", result.Diagnostic.Runtime, "ms")
 }
 
@@ -61,7 +61,7 @@ func TestPuzzleResultParsableFromBrowser(t *testing.T) {
 	log.Println(result.Puzzle.Nonce)
 	log.Println(result.Puzzle.Marshal())
 	assert.NoError(err, "unable to decode result")
-	assert.True(result.Valid(), "parsed result is invalid")
+	assert.True(result.Valid(42), "parsed result is invalid")
 	log.Println("calculation took", result.Diagnostic.Runtime, "ms")
 }
 

@@ -20,7 +20,10 @@ type Result struct {
 	Diagnostic *Diagnostic
 }
 
-func (r *Result) Valid() bool {
+func (r *Result) Valid(appId uint32) bool {
+	if appId > 0 && r.Puzzle.AppID != appId {
+		return false
+	}
 	if time.Now().Sub(time.Unix(int64(r.Puzzle.Timestamp), 0)) > time.Duration(r.Puzzle.Expiry) * time.Minute {
 		return false
 	}
