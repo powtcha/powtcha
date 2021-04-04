@@ -2,7 +2,7 @@ package byteparser
 
 import (
 	"errors"
-	"powtcha/util"
+	"github.com/powtcha/powtcha/util"
 )
 
 var (

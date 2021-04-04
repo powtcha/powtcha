@@ -8,11 +8,11 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"errors"
+	"github.com/powtcha/powtcha/byteparser"
+	"github.com/powtcha/powtcha/constants"
 	"golang.org/x/crypto/blake2b"
 	"golang.org/x/crypto/cryptobyte"
 	"math"
-	"powtcha/byteparser"
-	"powtcha/constants"
 	"strings"
 	"time"
 )

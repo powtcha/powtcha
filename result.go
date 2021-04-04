@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"errors"
-	"powtcha/constants"
+	"github.com/powtcha/powtcha/constants"
 	"strings"
 	"time"
 )

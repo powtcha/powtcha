@@ -3,8 +3,8 @@ package powtcha
 import (
 	"encoding/binary"
 	"errors"
+	"github.com/powtcha/powtcha/util"
 	"golang.org/x/crypto/blake2b"
-	"powtcha/util"
 )
 
 func SolveStep(header []byte, T uint32, start []byte) (Solution, error) {
