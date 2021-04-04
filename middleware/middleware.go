@@ -3,9 +3,9 @@ package middleware
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/powtcha/powtcha"
 	"log"
 	"net/http"
-	"powtcha"
 	"strings"
 	"time"
 )
